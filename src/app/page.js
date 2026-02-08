@@ -1,6 +1,23 @@
+"use client";
+import axios from "axios";
 import Image from "next/image";
+import { useEffect, useState } from "react";
 
 export default function Home() {
+  const [kategori, setKategori] = useState([]);
+  const getKategori = async () => {
+    try {
+      await axios.get("/api").then((res) => {
+        setKategori(res.data);
+      });
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  useEffect(() => {
+    getKategori();
+  }, []);
   return (
     <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
       <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
@@ -59,6 +76,9 @@ export default function Home() {
             Documentation
           </a>
         </div>
+        {kategori.map((item) => (
+          <div key={item.id_kategori}>{item.nama_kategori}</div>
+        ))}
       </main>
     </div>
   );
