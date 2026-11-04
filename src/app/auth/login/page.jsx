@@ -22,7 +22,7 @@ import {
   InputGroupAddon,
   InputGroupInput,
 } from "@/components/ui/input-group";
-import { Eye, Mail, RectangleEllipsis } from "lucide-react";
+import { Eye, Home, LogIn, Mail, RectangleEllipsis } from "lucide-react";
 import { signIn, signOut, useSession } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -56,16 +56,21 @@ export default function LoginPage() {
   };
   return (
     <>
-      <section className="px-8 py-4 flex flex-col justify-center items-center font-geist-sans">
-        <Card>
+      <section className="px-8 py-4 min-h-screen bg-linear-to-br from-yellow-400 to-orange-500 flex flex-col justify-center items-center font-geist-sans">
+        <Card className="w-full max-w-md">
           <CardHeader>
-            <CardTitle className="text-2xl font-bold">Login</CardTitle>
+            <CardTitle className="text-3xl font-bold text-orange-500 font-instrument-sans text-center flex flex-col items-center justify-center gap-2">
+              <span className="p-3 rounded-full bg-linear-to-br from-yellow-400 to-orange-500 text-white">
+                <LogIn size={30} />
+              </span>
+              Login
+            </CardTitle>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit}>
               <FieldSet>
-                <FieldLegend>Form Login</FieldLegend>
-                <FieldDescription>Ini adalah from login</FieldDescription>
+                {/* <FieldLegend>Form Login</FieldLegend>
+                <FieldDescription>Ini adalah from login</FieldDescription> */}
                 <Field>
                   <FieldLabel htmlFor="email">Email</FieldLabel>
                   <FieldContent>
@@ -116,15 +121,20 @@ export default function LoginPage() {
                     </InputGroup>
                   </FieldContent>
                 </Field>
-                <Button type="submit">Login</Button>
+                <Button
+                  type="submit"
+                  className={"bg-linear-to-br from-yellow-400 to-orange-500"}
+                >
+                  Login
+                </Button>
+                <Button type="button" asChild>
+                  <Link href={"/"}>
+                    <Home />
+                  </Link>
+                </Button>
               </FieldSet>
             </form>
           </CardContent>
-          <CardFooter>
-            <Link href={"/auth/register"} className="text-blue-600 mx-auto">
-              Register
-            </Link>
-          </CardFooter>
         </Card>
       </section>
     </>

@@ -1,7 +1,6 @@
 import bcrypt from "bcryptjs";
 
 export async function hashPassword(password) {
-  console.log("ini pw", password);
   return await bcrypt.hash(password, 10);
 }
 

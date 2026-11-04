@@ -35,9 +35,8 @@ export default function RegisterPage() {
 
     try {
       const response = await axios.post("/api/users", {
-        nama_user: e.target.nama_user.value,
+        nama_lengkap: e.target.nama_lengkap.value,
         username: e.target.username.value,
-        alamat: e.target.alamat.value,
         email: e.target.email.value,
         password: e.target.password.value,
       });
@@ -64,13 +63,13 @@ export default function RegisterPage() {
             <form onSubmit={handleRegis}>
               <FieldSet>
                 <Field>
-                  <FieldLabel htmlFor="nama_user">Nama</FieldLabel>
+                  <FieldLabel htmlFor="nama_lengkap">Nama</FieldLabel>
                   <FieldContent>
                     <InputGroup>
                       <InputGroupInput
-                        id="nama_user"
+                        id="nama_lengkap"
                         type="text"
-                        name="nama_user"
+                        name="nama_lengkap"
                         placeholder="John Doe"
                         required
                       />
@@ -94,21 +93,6 @@ export default function RegisterPage() {
                       <InputGroupAddon align="inline-start">
                         <CircleUser />
                       </InputGroupAddon>
-                    </InputGroup>
-                  </FieldContent>
-                </Field>
-                <Field>
-                  <FieldLabel htmlFor="alamat">Alamat</FieldLabel>
-                  <FieldContent>
-                    <InputGroup>
-                      <InputGroupTextarea
-                        id="alamat"
-                        type="text"
-                        name="alamat"
-                        placeholder="Alamat Anda"
-                        className={"h-15"}
-                        required
-                      />
                     </InputGroup>
                   </FieldContent>
                 </Field>

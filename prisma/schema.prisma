@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client"
   output   = "../src/generated/prisma"
@@ -13,22 +7,101 @@ datasource db {
   provider = "mysql"
 }
 
-model user {
-  id_user   Int         @id @default(autoincrement())
-  nama_user String
-  username  String
-  email     String      @unique(map: "User_email_key")
-  password  String
-  role      String      @default("user")
-  photo     String?
-  alamat    String
-  createdAt DateTime    @default(now())
-  updatedAt DateTime
+model tb_user {
+  id_user          Int                @id @default(autoincrement())
+  nama_lengkap     String
+  username         String
+  email            String             @unique(map: "User_email_key")
+  password         String
+  role             Role               @default(petugas)
+  status_aktif     Int
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime
+  tb_log_aktivitas tb_log_aktivitas[]
+  tb_transaksi     tb_transaksi[]
 }
 
-model kategori {
-  id_kategori   Int      @id @default(autoincrement())
-  nama_kategori String
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime
+model tb_log_aktivitas {
+  id_log          Int      @id @default(autoincrement())
+  id_user         Int
+  aktivitas       String
+  waktu_aktivitas DateTime
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime
+  tb_user         tb_user  @relation(fields: [id_user], references: [id_user])
+
+  @@index([id_user], map: "tb_log_aktivitas_id_user_fkey")
+}
+
+model tb_transaksi {
+  id_parkir      Int            @id @default(autoincrement())
+  id_kendaraan   Int
+  waktu_masuk    DateTime       @db.DateTime(0)
+  waktu_keluar   DateTime?      @db.DateTime(0)
+  id_tarif       Int
+  durasi_jam     Int?
+  biaya_total    Int?
+  status         Status         @default(masuk)
+  id_user        Int
+  id_area        Int
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime
+  tb_area_parkir tb_area_parkir @relation(fields: [id_area], references: [id_area])
+  tb_kendaraan   tb_kendaraan   @relation(fields: [id_kendaraan], references: [id_kendaraan])
+  tb_tarif       tb_tarif       @relation(fields: [id_tarif], references: [id_tarif])
+  tb_user        tb_user        @relation(fields: [id_user], references: [id_user])
+
+  @@index([id_area], map: "tb_transaksi_id_area_fkey")
+  @@index([id_kendaraan], map: "tb_transaksi_id_kendaraan_fkey")
+  @@index([id_tarif], map: "tb_transaksi_id_tarif_fkey")
+  @@index([id_user], map: "tb_transaksi_id_user_fkey")
+}
+
+model tb_kendaraan {
+  id_kendaraan    Int            @id @default(autoincrement())
+  plat_nomor      String         @unique(map: "plat_nomor_key")
+  jenis_kendaraan String
+  warna           String
+  pemilik         String
+  id_user         Int
+  photo String?
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime
+  tb_transaksi    tb_transaksi[]
+}
+
+model tb_area_parkir {
+  id_area      Int            @id @default(autoincrement())
+  nama_area    String
+  kapasitas    Int
+  terisi       Int
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime
+  tb_transaksi tb_transaksi[]
+}
+
+model tb_tarif {
+  id_tarif        Int            @id @default(autoincrement())
+  jenis_kendaraan JenisKendaraan
+  tarif_per_jam   Int
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime
+  tb_transaksi    tb_transaksi[]
+}
+
+enum Role {
+  admin
+  petugas
+  owner
+}
+
+enum Status {
+  masuk
+  keluar
+}
+
+enum JenisKendaraan {
+  motor
+  mobil
+  lainnya
 }

@@ -1,23 +1,20 @@
 import NextAuth from "next-auth";
 import { prisma } from "@/lib/prisma";
 import Credentials from "next-auth/providers/credentials";
-// import { PrismaAdapter } from "@auth/prisma-adapter";
 import { verify } from "@/utils/password";
 
 const handler = NextAuth({
-  //   adapter: PrismaAdapter(prisma),
   providers: [
     Credentials({
       name: "Credentials",
       credentials: {
-        // username: { label: "Username", type: "text" },
         email: { label: "Email", type: "email" },
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) return null;
 
-        const user = await prisma.user.findUnique({
+        const user = await prisma.tb_user.findUnique({
           where: { email: credentials.email },
         });
 
@@ -31,15 +28,20 @@ const handler = NextAuth({
           throw new Error("Email atau password salah");
         }
 
+        const log_aktivitas = await prisma.tb_log_aktivitas.create({
+          data: {
+            id_user: Number(user.id_user),
+            aktivitas: "Login",
+            waktu_aktivitas: new Date(),
+            updatedAt: new Date(),
+          },
+        });
+
         return {
           id: user.id_user.toString(),
-          name: user.nama_user,
-          // username: user.username,
+          name: user.nama_lengkap,
           role: user.role,
           email: user.email,
-          // alamat: user.alamat,
-          // createdAt: user.createdAt,
-          // updatedAt: user.updatedAt,
         };
       },
     }),
